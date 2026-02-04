@@ -8,7 +8,7 @@ public:
         : capacity(cap){}
 
     int get(int key){
-        if(this->cacheMap.find(key) != this->cacheMap.end()){
+        if(cacheMap.find(key) != cacheMap.end()){
             recentKeys.erase(cacheMap[key].second);
             recentKeys.push_front(key);
             cacheMap[key].second = recentKeys.begin();
@@ -20,7 +20,7 @@ public:
     void put(int key, int value){
         if(cacheMap.find(key) != cacheMap.end()){
             recentKeys.erase(cacheMap[key].second);
-        } else if (cacheMap.size() >= this->capacity) {
+        } else if (cacheMap.size() >= capacity) {
             int lastKey = recentKeys.back();
             recentKeys.pop_back();
             cacheMap.erase(lastKey);
@@ -32,14 +32,14 @@ public:
 
     void print_cache(){
         std::cout << "LRU Cache: ";
-        for (auto const& pair : this->cacheMap) {
+        for (auto const& pair : cacheMap) {
             std::cout << pair.first << ":" << pair.second.first << "  ";
         }
 
         std::cout << " | ";
 
         std::cout << "Recent Keys: ";
-        for (auto const& key : this->recentKeys) {
+        for (auto const& key : recentKeys) {
             std::cout << key << " ";
         }
         std::cout << std::endl;
