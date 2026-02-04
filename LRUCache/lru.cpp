@@ -1,20 +1,14 @@
 #include <iostream>
-#include <unordered_map>
 #include <list>
+#include <unordered_map>
 
 class LRUCache {
-private:
-    int capacity;
-    std::unordered_map<int, std::pair<int, std::list<int>::iterator>> cacheMap;
-    std::list<int> recentKeys;
-
 public:
-    LRUCache(int capacity) {
-        this->capacity = capacity;
-    }
+    LRUCache(int cap)
+        : capacity(cap){}
 
-    int get(int key) {
-        if (cacheMap.find(key) != cacheMap.end()) {
+    int get(int key){
+        if(this->cacheMap.find(key) != this->cacheMap.end()){
             recentKeys.erase(cacheMap[key].second);
             recentKeys.push_front(key);
             cacheMap[key].second = recentKeys.begin();
@@ -23,10 +17,10 @@ public:
         return -1;
     }
 
-    void put(int key, int value) {
-        if (cacheMap.find(key) != cacheMap.end()) {
+    void put(int key, int value){
+        if(cacheMap.find(key) != cacheMap.end()){
             recentKeys.erase(cacheMap[key].second);
-        } else if (cacheMap.size() >= capacity) {
+        } else if (cacheMap.size() >= this->capacity) {
             int lastKey = recentKeys.back();
             recentKeys.pop_back();
             cacheMap.erase(lastKey);
@@ -36,83 +30,47 @@ public:
         cacheMap[key] = { value, recentKeys.begin() };
     }
 
-    const std::list<int>& getRecentKeys() const {
-        return recentKeys;
+    void print_cache(){
+        std::cout << "LRU Cache: ";
+        for (auto const& pair : this->cacheMap) {
+            std::cout << pair.first << ":" << pair.second.first << "  ";
+        }
+
+        std::cout << " | ";
+
+        std::cout << "Recent Keys: ";
+        for (auto const& key : this->recentKeys) {
+            std::cout << key << " ";
+        }
+        std::cout << std::endl;
     }
 
-    const std::unordered_map<int, std::pair<int, std::list<int>::iterator>>& getCacheMap() const {
-        return cacheMap;
-    }
+private:
+    int capacity;
+    std::unordered_map<int, std::pair<int, std::list<int>::iterator>> cacheMap;
+    std::list<int> recentKeys;
 };
 
-int main() {
-    LRUCache lru(2);
+int main(){
+    LRUCache lru(3);
 
-    lru.put(1, 1);
-    std::cout << "LRU Cache: ";
-    for (auto const& pair : lru.getCacheMap()) {
-        std::cout << pair.first << ":" << pair.second.first << " ";
-    }
-    std::cout << "Recent Keys: ";
-    for (auto const& key : lru.getRecentKeys()) {
-        std::cout << key << " ";
-    }
-    std::cout << std::endl;
+    lru.put(1, 100);
+    lru.print_cache();
 
-    lru.put(2, 2);
-    std::cout << "LRU Cache: ";
-    for (auto const& pair : lru.getCacheMap()) {
-        std::cout << pair.first << ":" << pair.second.first << " ";
-    }
-    std::cout << "Recent Keys: ";
-    for (auto const& key : lru.getRecentKeys()) {
-        std::cout << key << " ";
-    }
-    std::cout << std::endl;
+    lru.put(2, 200);
+    lru.print_cache();
 
-    lru.put(3, 3);
-    std::cout << "LRU Cache: ";
-    for (auto const& pair : lru.getCacheMap()) {
-        std::cout << pair.first << ":" << pair.second.first << " ";
-    }
-    std::cout << "Recent Keys: ";
-    for (auto const& key : lru.getRecentKeys()) {
-        std::cout << key << " ";
-    }
-    std::cout << std::endl;
+    lru.put(3, 300);
+    lru.print_cache();
 
     lru.get(2);
-    std::cout << "LRU Cache: ";
-    for (auto const& pair : lru.getCacheMap()) {
-        std::cout << pair.first << ":" << pair.second.first << " ";
-    }
-    std::cout << "Recent Keys: ";
-    for (auto const& key : lru.getRecentKeys()) {
-        std::cout << key << " ";
-    }
-    std::cout << std::endl;
+    lru.print_cache();
 
-    lru.put(4, 4);
-    std::cout << "LRU Cache: ";
-    for (auto const& pair : lru.getCacheMap()) {
-        std::cout << pair.first << ":" << pair.second.first << " ";
-    }
-    std::cout << "Recent Keys: ";
-    for (auto const& key : lru.getRecentKeys()) {
-        std::cout << key << " ";
-    }
-    std::cout << std::endl;
+    lru.put(4, 400);
+    lru.print_cache();
 
     lru.get(2);
-    std::cout << "LRU Cache: ";
-    for (auto const& pair : lru.getCacheMap()) {
-        std::cout << pair.first << ":" << pair.second.first << " ";
-    }
-    std::cout << "Recent Keys: ";
-    for (auto const& key : lru.getRecentKeys()) {
-        std::cout << key << " ";
-    }
-    std::cout << std::endl;
+    lru.print_cache();
 
     return 0;
 }
